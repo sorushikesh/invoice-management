@@ -35,7 +35,7 @@ export interface SignupResponse {
 }
 
 export async function signup(data: SignupRequest): Promise<SignupResponse> {
-  return apiFetch<SignupResponse>("/auth/register", {
+  return apiFetch<SignupResponse>(`${import.meta.env.VITE_API_BASE_URL}/users/register`, {
     method: "POST",
     body: data,
   });
