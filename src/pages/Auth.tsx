@@ -3,8 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SignupForm } from "@/components/auth/SignupForm";
-import { SocialLogin } from "@/components/auth/SocialLogin";
-import { Lock } from "lucide-react";
+import { FileText } from "lucide-react";
 
 const Auth = () => {
   const [activeTab, setActiveTab] = useState("login");
@@ -20,15 +19,15 @@ const Auth = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow mb-4 shadow-lg">
-              <Lock className="h-8 w-8 text-primary-foreground" />
+              <FileText className="h-8 w-8 text-primary-foreground" />
             </div>
             <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-              Welcome Back
+              Invoice Manager
             </h1>
             <p className="text-muted-foreground mt-2">
               {activeTab === "login" 
-                ? "Sign in to access your account" 
-                : "Create your account to get started"}
+                ? "Secure access to your billing workspace"
+                : "Create your account to start invoicing"}
             </p>
           </div>
 
@@ -45,12 +44,10 @@ const Auth = () => {
 
             <TabsContent value="login" className="space-y-4">
               <LoginForm />
-              <SocialLogin />
             </TabsContent>
 
             <TabsContent value="signup" className="space-y-4">
               <SignupForm />
-              <SocialLogin />
             </TabsContent>
           </Tabs>
 

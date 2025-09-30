@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Mail, Lock, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { login } from "@/services/auth";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast({
         title: "Missing fields",
@@ -25,15 +26,22 @@ export const LoginForm = () => {
     }
 
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await login({ email, password, rememberMe });
       toast({
         title: "Login successful!",
-        description: "Welcome back to your account.",
+        description: "You're signed in to Invoice Manager.",
       });
-    }, 1500);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Login failed";
+      toast({
+        title: "Login failed",
+        description: message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -47,7 +55,7 @@ export const LoginForm = () => {
           <Input
             id="email"
             type="email"
-            placeholder="you@example.com"
+            placeholder="billing@acme.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="pl-10"
@@ -112,3 +120,4 @@ export const LoginForm = () => {
     </form>
   );
 };
+

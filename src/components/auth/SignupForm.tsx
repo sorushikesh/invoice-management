@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Mail, Lock, User, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { signup } from "@/services/auth";
 
 export const SignupForm = () => {
   const [name, setName] = useState("");
@@ -16,7 +17,7 @@ export const SignupForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name || !email || !password || !confirmPassword) {
       toast({
         title: "Missing fields",
@@ -45,15 +46,22 @@ export const SignupForm = () => {
     }
 
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await signup({ name, email, password });
       toast({
         title: "Account created!",
-        description: "Welcome! Your account has been successfully created.",
+        description: "You're ready to create and send invoices.",
       });
-    }, 1500);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Signup failed";
+      toast({
+        title: "Signup failed",
+        description: message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -67,7 +75,7 @@ export const SignupForm = () => {
           <Input
             id="name"
             type="text"
-            placeholder="John Doe"
+            placeholder="Your name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="pl-10"
@@ -85,7 +93,7 @@ export const SignupForm = () => {
           <Input
             id="signup-email"
             type="email"
-            placeholder="you@example.com"
+            placeholder="billing@acme.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="pl-10"
@@ -142,9 +150,7 @@ export const SignupForm = () => {
           htmlFor="terms"
           className="text-sm text-muted-foreground cursor-pointer select-none leading-relaxed"
         >
-          I agree to the{" "}
-          <span className="text-primary hover:underline">Terms of Service</span> and{" "}
-          <span className="text-primary hover:underline">Privacy Policy</span>
+          I agree to the <span className="text-primary hover:underline">Terms of Service</span> and <span className="text-primary hover:underline">Privacy Policy</span>
         </label>
       </div>
 
@@ -161,3 +167,4 @@ export const SignupForm = () => {
     </form>
   );
 };
+
