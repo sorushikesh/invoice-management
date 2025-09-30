@@ -43,28 +43,34 @@ export default defineConfig([
 ])
 ```
 
-## Spring Boot Integration (UI-only)
+## Backend Integration
 
 - API base URL
-  - In development, the Vite dev server proxies `/api` to your Spring Boot app.
-  - Configure the proxy target with `VITE_API_PROXY_TARGET` (defaults to `http://localhost:8080`). See `.env.example`.
-  - In production, set `VITE_API_URL` to your backend URL, or serve the UI from the same domain so `/api` works.
+  - In development, the Vite dev server proxies `/api` to your backend services.
+  - For production, set `VITE_API_URL` to your gateway/base API URL, or serve the UI from the same origin so `/api` works.
+
+- Multi-service dev proxy
+  - Define service targets via env in `.env`:
+    - `VITE_PROXY_DEFAULT` → maps `/api` to the given target (e.g., `http://localhost:8081/api/v1`).
+    - `VITE_PROXY_AUTH` → maps `/api/auth` to the given target.
+    - `VITE_PROXY_BILLING` → maps `/api/billing` to the given target.
+    - Add more with the `VITE_PROXY_*` pattern; the suffix becomes the path segment under `/api`.
+  - The target’s base path (e.g., `/api/v1`) is preserved via rewrite. See `.env.example`.
 
 - Dev server
-  - Vite runs on `http://localhost:5173` to avoid clashing with Spring Boot on `8080`.
-  - Start Spring Boot on `8080`, then run `npm run dev` and the UI forwards `/api` calls to the backend.
+  - Vite runs on `http://localhost:5173`.
+  - Run your services, then `npm run dev`; the UI forwards `/api/...` calls per the proxy mapping.
 
 - Client code
-  - Generic API helper in `src/services/api.ts` uses `VITE_API_URL` or a relative `/api` path.
-  - Auth endpoints are wired in `src/services/auth.ts` (`POST /api/auth/login`, `POST /api/auth/register`). Adjust paths to match your backend.
-  - Login/Signup forms call these services and show success/error toasts.
+  - Generic API helper in `src/services/api.ts` uses `VITE_API_URL` or the relative `/api` proxy.
+  - Example paths: `apiFetch('/auth/login')`, `apiFetch('/auth/users/register')`, `apiFetch('/billing/invoices')`.
 
 - CORS
-  - If you don’t use the dev proxy or serve UI and API from the same origin, enable CORS on Spring Boot for your UI domain.
+  - If you don’t use the dev proxy or same origin, enable CORS on your backend for the UI origin.
 
 - Environment
   - Copy `.env.example` to `.env` and tweak as needed.
-  - Supabase variables are present but unused when using Spring Boot.
+  - Supabase variables are present but optional.
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 

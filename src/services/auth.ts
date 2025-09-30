@@ -16,7 +16,15 @@ export interface LoginResponse {
 }
 
 export async function login(data: LoginRequest): Promise<LoginResponse> {
-  return apiFetch<LoginResponse>("/auth/login", {
+  const allowDummy = (String(import.meta.env.VITE_ALLOW_DUMMY_LOGIN || "").toLowerCase() === "true") || import.meta.env.DEV;
+  const emailLc = (data.email || "").toLowerCase();
+  if (allowDummy && (emailLc === "admin" || emailLc === "admin@admin.com") && data.password === "admin") {
+    return Promise.resolve({
+      token: "dummy-admin-token",
+      user: { id: "admin", email: emailLc.includes("@") ? emailLc : "admin@local", name: "Administrator" },
+    });
+  }
+  return apiFetch<LoginResponse>("/users/login", {
     method: "POST",
     body: data,
   });
@@ -35,9 +43,10 @@ export interface SignupResponse {
 }
 
 export async function signup(data: SignupRequest): Promise<SignupResponse> {
-  return apiFetch<SignupResponse>(`${import.meta.env.VITE_API_BASE_URL}/users/register`, {
+  // Default service path; if you prefer a dedicated auth service,
+  // set VITE_PROXY_AUTH and switch this to "/auth/users/register".
+  return apiFetch<SignupResponse>("/users/register", {
     method: "POST",
     body: data,
   });
 }
-

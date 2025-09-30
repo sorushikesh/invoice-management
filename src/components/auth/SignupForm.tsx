@@ -53,12 +53,7 @@ export const SignupForm = () => {
         description: "You're ready to create and send invoices.",
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Signup failed";
-      toast({
-        title: "Signup failed",
-        description: message,
-        variant: "destructive",
-      });
+      // Error toast is handled globally in apiFetch
     } finally {
       setIsLoading(false);
     }
@@ -167,4 +162,3 @@ export const SignupForm = () => {
     </form>
   );
 };
-

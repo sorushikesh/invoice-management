@@ -6,8 +6,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Mail, Lock, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { login } from "@/services/auth";
+import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -32,13 +34,9 @@ export const LoginForm = () => {
         title: "Login successful!",
         description: "You're signed in to Invoice Manager.",
       });
+      navigate("/dashboard", { replace: true });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Login failed";
-      toast({
-        title: "Login failed",
-        description: message,
-        variant: "destructive",
-      });
+      // Error toast is handled globally in apiFetch
     } finally {
       setIsLoading(false);
     }
@@ -120,4 +118,3 @@ export const LoginForm = () => {
     </form>
   );
 };
-
