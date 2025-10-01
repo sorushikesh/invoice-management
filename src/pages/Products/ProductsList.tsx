@@ -1,7 +1,8 @@
 import AppLayout from "@/layouts/AppLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import PageSection from "@/components/PageSection";
+import ActionButton from "@/components/ActionButton";
+import AppDataGrid, { GridColDef } from "@/components/datagrid/AppDataGrid";
+import { actionsColumn } from "@/components/datagrid/Actions";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "@/lib/settings";
 
@@ -13,41 +14,30 @@ const products = [
 
 export default function ProductsList() {
   const navigate = useNavigate();
+  const columns: GridColDef[] = [
+    { field: "name", headerName: "Name", flex: 1, minWidth: 180 },
+    { field: "sku", headerName: "SKU", width: 140 },
+    { field: "unit", headerName: "Unit", width: 120 },
+    { field: "price", headerName: "Price", width: 140, valueFormatter: ({ value }) => formatCurrency(value as number), align: "right", headerAlign: "right" },
+    actionsColumn({
+      onView: (row) => navigate(`/products/${row.id}`),
+      onEdit: (row) => navigate(`/products/${row.id}`),
+      onDelete: (row) => { if (confirm(`Delete ${row.name}?`)) { /* TODO */ } },
+    }),
+  ];
   return (
-    <AppLayout title="Products">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Catalog</h2>
-        <Button onClick={() => navigate("/products/new")}>Add Product/Service</Button>
-      </div>
+    <AppLayout
+      title="Products"
+      breadcrumbs={[{ label: "Dashboard", to: "/dashboard" }, { label: "Products" }]}
+      actions={<ActionButton to="/products/new">Add Product/Service</ActionButton>}
+    >
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Products & Services</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>SKU</TableHead>
-                <TableHead>Unit</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.map((p) => (
-                <TableRow key={p.id}>
-                  <TableCell>{p.name}</TableCell>
-                  <TableCell>{p.sku}</TableCell>
-                  <TableCell>{p.unit}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(p.price)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableCaption>Showing {products.length} items</TableCaption>
-          </Table>
-        </CardContent>
-      </Card>
+      <PageSection title="Products & Services">
+          <AppDataGrid futuristic={false} storageKey="grid:products" rows={products} columns={columns} getRowId={(r) => r.id} />
+      </PageSection>
     </AppLayout>
   );
 }
+
+
+

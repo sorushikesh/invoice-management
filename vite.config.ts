@@ -40,6 +40,7 @@ export default defineConfig(({ mode }) => {
     if (typeof value === "string" && value) setProxy(name, value);
   }
 
+  const enableTagger = mode === "development" && String(env.VITE_TAGGER || "").toLowerCase() === "true";
   return {
     server: {
       host: "localhost",
@@ -50,7 +51,7 @@ export default defineConfig(({ mode }) => {
       host: "localhost",
       port: 4173,
     },
-    plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+    plugins: [react(), enableTagger && componentTagger()].filter(Boolean),
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

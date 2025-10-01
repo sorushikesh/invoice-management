@@ -1,8 +1,10 @@
 import AppLayout from "@/layouts/AppLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import PageSection from "@/components/PageSection";
 import { formatCurrency } from "@/lib/settings";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const revenueData = [
   { month: "Jan", revenue: 12000, expenses: 8000 },
@@ -25,8 +27,18 @@ const FinanceDashboard = () => {
   const outstanding = 12450;
   const profit = totals.revenue - totals.expenses;
 
+  const navigate = useNavigate();
   return (
-    <AppLayout title="Dashboard">
+    <AppLayout
+      title="Dashboard"
+      breadcrumbs={[{ label: "Dashboard" }]}
+      actions={
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => navigate("/clients/new")}>New Client</Button>
+          <Button onClick={() => navigate("/invoices/new")}>New Invoice</Button>
+        </div>
+      }
+    >
       <div className="mx-auto max-w-6xl px-6 py-8 space-y-8">
         <div>
           <h1 className="text-3xl font-bold">Finance Dashboard</h1>
@@ -34,37 +46,21 @@ const FinanceDashboard = () => {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="glass-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            </CardHeader>
-            <CardContent className="text-3xl font-bold">{formatCurrency(totals.revenue)}</CardContent>
-          </Card>
-          <Card className="glass-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
-            </CardHeader>
-            <CardContent className="text-3xl font-bold">{formatCurrency(totals.expenses)}</CardContent>
-          </Card>
-          <Card className="glass-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Profit</CardTitle>
-            </CardHeader>
-            <CardContent className="text-3xl font-bold">{formatCurrency(profit)}</CardContent>
-          </Card>
-          <Card className="glass-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Outstanding</CardTitle>
-            </CardHeader>
-            <CardContent className="text-3xl font-bold">{formatCurrency(outstanding)}</CardContent>
-          </Card>
+          <PageSection title="Total Revenue">
+            <div className="text-3xl font-bold">{formatCurrency(totals.revenue)}</div>
+          </PageSection>
+          <PageSection title="Total Expenses">
+            <div className="text-3xl font-bold">{formatCurrency(totals.expenses)}</div>
+          </PageSection>
+          <PageSection title="Profit">
+            <div className="text-3xl font-bold">{formatCurrency(profit)}</div>
+          </PageSection>
+          <PageSection title="Outstanding">
+            <div className="text-3xl font-bold">{formatCurrency(outstanding)}</div>
+          </PageSection>
         </div>
 
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle>Revenue vs Expenses</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <PageSection title="Revenue vs Expenses">
             <ChartContainer
               className="h-[320px] w-full"
               config={{
@@ -81,8 +77,7 @@ const FinanceDashboard = () => {
                 <Area type="monotone" dataKey="expenses" stroke="var(--color-expenses)" fill="var(--color-expenses)" fillOpacity={0.15} />
               </AreaChart>
             </ChartContainer>
-          </CardContent>
-        </Card>
+        </PageSection>
       </div>
     </AppLayout>
   );

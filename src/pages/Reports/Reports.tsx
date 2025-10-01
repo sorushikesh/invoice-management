@@ -1,9 +1,10 @@
 import AppLayout from "@/layouts/AppLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import PageSection from "@/components/PageSection";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, BarChart, Bar } from "recharts";
+
 
 const revenueData = [
   { month: "Jan", revenue: 12000 },
@@ -23,40 +24,48 @@ const agingData = [
 
 export default function Reports() {
   return (
-    <AppLayout title="Reports">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="flex items-end gap-3">
-          <div className="flex-1">
-            <label className="text-xs text-muted-foreground">From</label>
-            <Input type="date" />
-          </div>
-          <div className="flex-1">
-            <label className="text-xs text-muted-foreground">To</label>
-            <Input type="date" />
-          </div>
-          <div className="w-40">
-            <label className="text-xs text-muted-foreground">Status</label>
-            <Select defaultValue="all">
-              <SelectTrigger>
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="paid">Paid</SelectItem>
-                <SelectItem value="unpaid">Unpaid</SelectItem>
-                <SelectItem value="overdue">Overdue</SelectItem>
-              </SelectContent>
-            </Select>
+    <AppLayout
+      title="Reports"
+      breadcrumbs={[{ label: "Dashboard", to: "/dashboard" }, { label: "Reports" }]}
+      actions={
+        <div className="flex items-center gap-2">
+          <button className="px-3 py-2 rounded border text-sm">Export CSV</button>
+          <button className="px-3 py-2 rounded border text-sm">Export Excel</button>
+          <button className="px-3 py-2 rounded border text-sm">Export PDF</button>
+        </div>
+      }
+    >
+      <PageSection title="Filters" className="mb-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex items-end gap-3">
+            <div className="flex-1">
+              <label className="text-xs text-muted-foreground">From</label>
+              <Input type="date" />
+            </div>
+            <div className="flex-1">
+              <label className="text-xs text-muted-foreground">To</label>
+              <Input type="date" />
+            </div>
+            <div className="w-40">
+              <label className="text-xs text-muted-foreground">Status</label>
+              <Select defaultValue="all">
+                <SelectTrigger>
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="unpaid">Unpaid</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
-      </div>
+      </PageSection>
 
       <div className="grid gap-4 md:grid-cols-2 mt-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Revenue (Last 6 months)</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <PageSection title="Revenue (Last 6 months)">
             <ChartContainer
               className="h-[300px] w-full"
               config={{ revenue: { label: "Revenue", color: "hsl(var(--primary))" } }}
@@ -69,14 +78,9 @@ export default function Reports() {
                 <Area type="monotone" dataKey="revenue" stroke="var(--color-revenue)" fill="var(--color-revenue)" fillOpacity={0.2} />
               </AreaChart>
             </ChartContainer>
-          </CardContent>
-        </Card>
+        </PageSection>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>AR Aging</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <PageSection title="AR Aging">
             <ChartContainer
               className="h-[300px] w-full"
               config={{ amount: { label: "Amount", color: "hsl(var(--destructive))" } }}
@@ -89,10 +93,8 @@ export default function Reports() {
                 <Bar dataKey="amount" fill="var(--color-amount)" />
               </BarChart>
             </ChartContainer>
-          </CardContent>
-        </Card>
+        </PageSection>
       </div>
     </AppLayout>
   );
 }
-

@@ -1,48 +1,80 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
-
+import MUIButton, { ButtonProps as MUIButtonProps } from "@mui/material/Button";
 import { cn } from "@/lib/utils";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        social: "border border-border bg-card hover:bg-accent hover:border-primary/20 transition-all",
-      },
-      size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  },
-);
+type Variant = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "social";
+type Size = "default" | "sm" | "lg" | "icon";
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+export interface ButtonProps extends Omit<MUIButtonProps, "variant" | "size" | "color"> {
+  variant?: Variant;
+  size?: Size;
   asChild?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
-  },
-);
+const mapVariant = (v?: Variant): Pick<MUIButtonProps, "variant" | "color"> => {
+  switch (v) {
+    case "destructive":
+      return { variant: "contained", color: "error" };
+    case "outline":
+      return { variant: "outlined", color: "inherit" };
+    case "secondary":
+      return { variant: "contained", color: "inherit" };
+    case "ghost":
+      return { variant: "text", color: "inherit" };
+    case "link":
+      return { variant: "text", color: "primary" };
+    case "social":
+      return { variant: "outlined", color: "primary" };
+    case "default":
+    default:
+      return { variant: "contained", color: "primary" };
+  }
+};
+
+const mapSize = (s?: Size): MUIButtonProps["size"] => {
+  switch (s) {
+    case "sm":
+      return "small";
+    case "lg":
+      return "large";
+    case "icon":
+      return "small";
+    case "default":
+    default:
+      return "medium";
+  }
+};
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ variant, size, className, children, ...rest }, ref) => {
+  const { variant: v, color } = mapVariant(variant);
+  const s = mapSize(size);
+  return (
+    <MUIButton ref={ref} variant={v} color={color} size={s} className={cn(className)} {...rest}>
+      {children}
+    </MUIButton>
+  );
+});
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+// Backwards-compatible utility for className composition used by a few components
+export function buttonVariants({ variant = "default", size = "default", className = "" as string } = {}) {
+  const base = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0";
+  const map: Record<Variant, string> = {
+    default: "",
+    destructive: "",
+    outline: "",
+    secondary: "",
+    ghost: "",
+    link: "",
+    social: "",
+  };
+  const sizes: Record<Size, string> = {
+    default: "",
+    sm: "",
+    lg: "",
+    icon: "",
+  };
+  return cn(base, map[variant], sizes[size], className);
+}
+
+export { Button };

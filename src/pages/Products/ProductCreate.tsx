@@ -1,71 +1,73 @@
 import AppLayout from "@/layouts/AppLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import PageSection from "@/components/PageSection";
+import ActionButton from "@/components/ActionButton";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import RHFTextField from "@/material/components/RHFTextField";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function ProductCreate() {
-  const [name, setName] = useState("");
-  const [sku, setSku] = useState("");
-  const [unit, setUnit] = useState("");
-  const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
+  const schema = z.object({
+    name: z.string().min(2, "Name is required"),
+    sku: z.string().min(1, "SKU is required"),
+    unit: z.string().min(1, "Unit is required"),
+    price: z.coerce.number().positive("Price must be greater than 0"),
+  });
+  const { control, handleSubmit, reset } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: { name: "", sku: "", unit: "", price: 0 },
+  });
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !sku || !unit || !price) {
-      toast({ title: "Missing fields", description: "Please fill all fields", variant: "destructive" });
-      return;
-    }
+  const onSubmit = async (data: z.infer<typeof schema>) => {
     setLoading(true);
     try {
-      // TODO: apiFetch('/products', { method: 'POST', body: { name, sku, unit, price: Number(price) } })
+      // TODO: apiFetch('/products', { method: 'POST', body: { ...data } })
       await new Promise((r) => setTimeout(r, 600));
-      toast({ title: "Saved", description: `${name} added to catalog.` });
-      setName("");
-      setSku("");
-      setUnit("");
-      setPrice("");
+      toast({ title: "Saved", description: `${data.name} added to catalog.` });
+      reset();
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AppLayout title="Add Product/Service">
+    <AppLayout
+      title="Add Product/Service"
+      breadcrumbs={[{ label: "Dashboard", to: "/dashboard" }, { label: "Products", to: "/products" }, { label: "New" }]}
+      actions={<ActionButton type="submit" form="product-form" disabled={loading}>Save</ActionButton>}
+    >
       <div className="mx-auto max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>New Catalog Item</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={onSubmit} className="space-y-4">
+        <PageSection title="New Catalog Item">
+            <form id="product-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Service or product name" disabled={loading} />
+                <RHFTextField name="name" control={control} label="Name" disabled={loading} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="sku">SKU</Label>
-                  <Input id="sku" value={sku} onChange={(e) => setSku(e.target.value)} placeholder="SKU" disabled={loading} />
+                  <RHFTextField name="sku" control={control} label="SKU" disabled={loading} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="unit">Unit</Label>
-                  <Input id="unit" value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="hour, item, project..." disabled={loading} />
+                  <RHFTextField name="unit" control={control} label="Unit" disabled={loading} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="price">Price</Label>
-                  <Input id="price" type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" disabled={loading} />
+                  <RHFTextField name="price" control={control} label="Price" type="number" disabled={loading} />
                 </div>
               </div>
               <Button type="submit" disabled={loading}>Save</Button>
             </form>
-          </CardContent>
-        </Card>
+        </PageSection>
       </div>
     </AppLayout>
   );
 }
+
 

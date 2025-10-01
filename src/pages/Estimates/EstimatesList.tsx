@@ -1,7 +1,9 @@
 import AppLayout from "@/layouts/AppLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import PageSection from "@/components/PageSection";
+import StatusLegend from "@/components/StatusLegend";
+import ActionButton from "@/components/ActionButton";
+import AppDataGrid, { GridColDef } from "@/components/datagrid/AppDataGrid";
+import { actionsColumn } from "@/components/datagrid/Actions";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "@/lib/settings";
 import { toast } from "@/hooks/use-toast";
@@ -21,48 +23,35 @@ export default function EstimatesList() {
   };
 
   return (
-    <AppLayout title="Estimates">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">All Estimates</h2>
-        <Button onClick={() => navigate("/estimates/new")}>Create Estimate</Button>
-      </div>
+    <AppLayout
+      title="Estimates"
+      breadcrumbs={[{ label: "Dashboard", to: "/dashboard" }, { label: "Estimates" }]}
+      actions={<ActionButton to="/estimates/new">Create Estimate</ActionButton>}
+    >
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Quotes / Estimates</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Number</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((r) => (
-                <TableRow key={r.number}>
-                  <TableCell>{r.number}</TableCell>
-                  <TableCell>{r.client}</TableCell>
-                  <TableCell>{r.date}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(r.amount)}</TableCell>
-                  <TableCell>{r.status}</TableCell>
-                  <TableCell className="text-right">
-                    <Button size="sm" variant="outline" onClick={() => convertToInvoice(r.number)}>
-                      Convert to Invoice
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableCaption>Showing {rows.length} estimates</TableCaption>
-          </Table>
-        </CardContent>
-      </Card>
+      <PageSection title="Quotes / Estimates">
+          <StatusLegend className="mb-2" statuses={[
+            { label: "Draft", kind: "generic" },
+            { label: "Sent", kind: "generic" },
+            { label: "Accepted", kind: "generic" },
+          ]} />
+          <AppDataGrid
+            futuristic={false}
+            rows={rows as any[]}
+            columns={[
+              { field: "number", headerName: "Number", width: 140 },
+              { field: "client", headerName: "Client", flex: 1, minWidth: 180 },
+              { field: "date", headerName: "Date", width: 120 },
+              { field: "amount", headerName: "Amount", width: 140, valueFormatter: ({ value }) => formatCurrency(value as number), align: "right", headerAlign: "right" },
+              { field: "status", headerName: "Status", width: 140 },
+              actionsColumn({ onView: (row) => convertToInvoice(row.number) }),
+            ] as GridColDef[]}
+            getRowId={(r) => r.number}
+            onRowClick={(id) => convertToInvoice(String(id))}
+          />
+      </PageSection>
     </AppLayout>
   );
 }
+
+

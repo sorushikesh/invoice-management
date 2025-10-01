@@ -1,53 +1,36 @@
 import * as React from "react";
-import * as TabsPrimitive from "@radix-ui/react-tabs";
+import MUITabs from "@mui/material/Tabs";
+import MUITab from "@mui/material/Tab";
 
-import { cn } from "@/lib/utils";
+type TabsContextValue = { value: string; setValue: (v: string) => void };
+const TabsCtx = React.createContext<TabsContextValue | null>(null);
 
-const Tabs = TabsPrimitive.Root;
+type TabsProps = React.HTMLAttributes<HTMLDivElement> & { defaultValue?: string; value?: string; onValueChange?: (v: string) => void; children?: React.ReactNode };
+export function Tabs({ defaultValue, value: valueProp, onValueChange, children, className, ...rest }: TabsProps) {
+  const [internal, setInternal] = React.useState(defaultValue || "");
+  const value = valueProp !== undefined ? valueProp : internal;
+  const setValue = (v: string) => { onValueChange?.(v); if (valueProp === undefined) setInternal(v); };
+  return (
+    <TabsCtx.Provider value={{ value, setValue }}>
+      <div className={className} {...rest}>{children}</div>
+    </TabsCtx.Provider>
+  );
+}
 
-const TabsList = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.List
-    ref={ref}
-    className={cn(
-      "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
-      className,
-    )}
-    {...props}
-  />
-));
-TabsList.displayName = TabsPrimitive.List.displayName;
+type TabsListProps = React.ComponentProps<typeof MUITabs>;
+export function TabsList(props: TabsListProps) {
+  const ctx = React.useContext(TabsCtx)!;
+  return <MUITabs value={ctx.value} onChange={(_, v) => ctx.setValue(String(v))} {...props} />;
+}
 
-const TabsTrigger = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-      className,
-    )}
-    {...props}
-  />
-));
-TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
+type TabsTriggerProps = Omit<React.ComponentProps<typeof MUITab>, "value" | "label"> & { value: string; children?: React.ReactNode };
+export function TabsTrigger({ value, children, ...rest }: TabsTriggerProps) {
+  return <MUITab value={value} label={children} {...rest} />;
+}
 
-const TabsContent = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Content
-    ref={ref}
-    className={cn(
-      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      className,
-    )}
-    {...props}
-  />
-));
-TabsContent.displayName = TabsPrimitive.Content.displayName;
-
-export { Tabs, TabsList, TabsTrigger, TabsContent };
+type TabsContentProps = { value: string; children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>;
+export function TabsContent({ value, children, ...rest }: TabsContentProps) {
+  const ctx = React.useContext(TabsCtx)!;
+  if (ctx.value !== value) return null;
+  return <div {...rest}>{children}</div>;
+}

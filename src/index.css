@@ -8,8 +8,9 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 240 10% 98%;
-    --foreground: 240 10% 10%;
+    /* Futuristic light theme */
+    --background: 240 14% 97%;
+    --foreground: 240 10% 12%;
 
     --card: 0 0% 100%;
     --card-foreground: 240 10% 10%;
@@ -17,9 +18,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 10%;
 
-    --primary: 262 83% 58%;
+    /* Electric purple primary with cyan accent */
+    --primary: 265 100% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 262 100% 75%;
+    --primary-glow: 265 100% 72%;
 
     --secondary: 240 5% 96%;
     --secondary-foreground: 240 10% 10%;
@@ -27,25 +29,26 @@ All colors MUST be HSL.
     --muted: 240 5% 96%;
     --muted-foreground: 240 4% 46%;
 
-    --accent: 262 90% 95%;
-    --accent-foreground: 262 83% 58%;
+    --accent: 190 95% 92%;
+    --accent-foreground: 190 100% 35%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 262 83% 58%;
+    --ring: 265 100% 60%;
 
     --radius: 0.75rem;
     
-    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(280 90% 65%));
-    --gradient-subtle: linear-gradient(180deg, hsl(240 10% 98%), hsl(240 20% 96%));
-    --gradient-finance: radial-gradient(1000px 500px at 80% -10%, hsl(262 83% 58% / 0.25), transparent 60%),
-      radial-gradient(800px 400px at -10% 20%, hsl(200 90% 60% / 0.18), transparent 60%);
+    --gradient-primary: linear-gradient(135deg, hsl(265 100% 60%), hsl(190 95% 50%));
+    --gradient-subtle: linear-gradient(180deg, hsl(240 14% 97%), hsl(240 18% 94%));
+    /* Futuristic header glow (purple + cyan) */
+    --gradient-finance: radial-gradient(1000px 500px at 80% -10%, hsl(265 100% 60% / 0.25), transparent 60%),
+      radial-gradient(800px 400px at -10% 20%, hsl(190 95% 50% / 0.18), transparent 60%);
     
-    --shadow-elegant: 0 10px 40px -10px hsl(262 83% 58% / 0.2);
-    --shadow-soft: 0 2px 20px -2px hsl(240 10% 10% / 0.1);
+    --shadow-elegant: 0 12px 50px -12px hsl(265 100% 60% / 0.25), 0 4px 24px -6px hsl(190 95% 50% / 0.15);
+    --shadow-soft: 0 2px 24px -4px hsl(240 10% 10% / 0.12);
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -67,7 +70,8 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 240 10% 6%;
+    /* Futuristic dark theme */
+    --background: 240 12% 6%;
     --foreground: 0 0% 98%;
 
     --card: 240 8% 10%;
@@ -76,9 +80,9 @@ All colors MUST be HSL.
     --popover: 240 8% 10%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 262 83% 58%;
+    --primary: 265 100% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 262 100% 75%;
+    --primary-glow: 265 100% 72%;
 
     --secondary: 240 4% 16%;
     --secondary-foreground: 0 0% 98%;
@@ -86,23 +90,23 @@ All colors MUST be HSL.
     --muted: 240 4% 16%;
     --muted-foreground: 240 5% 65%;
 
-    --accent: 240 4% 16%;
-    --accent-foreground: 262 83% 58%;
+    --accent: 190 40% 18%;
+    --accent-foreground: 190 95% 55%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 240 4% 16%;
     --input: 240 4% 16%;
-    --ring: 262 83% 58%;
+    --ring: 265 100% 60%;
     
-    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(280 90% 65%));
-    --gradient-subtle: linear-gradient(180deg, hsl(240 10% 6%), hsl(240 10% 10%));
-    --gradient-finance: radial-gradient(1000px 500px at 80% -10%, hsl(262 83% 58% / 0.28), transparent 60%),
-      radial-gradient(800px 400px at -10% 20%, hsl(200 90% 60% / 0.22), transparent 60%);
+    --gradient-primary: linear-gradient(135deg, hsl(265 100% 60%), hsl(190 95% 50%));
+    --gradient-subtle: linear-gradient(180deg, hsl(240 12% 6%), hsl(240 12% 10%));
+    --gradient-finance: radial-gradient(1000px 500px at 80% -10%, hsl(265 100% 60% / 0.32), transparent 60%),
+      radial-gradient(800px 400px at -10% 20%, hsl(190 95% 50% / 0.24), transparent 60%);
     
-    --shadow-elegant: 0 10px 40px -10px hsl(262 83% 58% / 0.4);
-    --shadow-soft: 0 2px 20px -2px hsl(0 0% 0% / 0.3);
+    --shadow-elegant: 0 14px 60px -14px hsl(265 100% 60% / 0.45), 0 6px 28px -8px hsl(190 95% 50% / 0.22);
+    --shadow-soft: 0 2px 24px -4px hsl(0 0% 0% / 0.35);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -116,12 +120,45 @@ All colors MUST be HSL.
 
 @layer components {
   .glass-card {
-    background-color: hsl(var(--card) / 0.6);
-    border: 1px solid hsl(var(--border) / 0.4);
-    box-shadow: var(--shadow-soft);
+    /* Neon glass with gradient border */
+    background: linear-gradient(hsl(var(--card) / 0.65), hsl(var(--card) / 0.65)) padding-box,
+      linear-gradient(135deg, hsl(var(--primary) / 0.4), hsl(var(--accent-foreground) / 0.35)) border-box;
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-elegant);
     backdrop-filter: saturate(1.2) blur(12px);
     -webkit-backdrop-filter: saturate(1.2) blur(12px);
   }
+
+  /* Compact table utility for consistent dense tables */
+  .table-compact th {
+    @apply h-10 px-3 text-xs;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    color: hsl(var(--muted-foreground));
+  }
+  .table-compact thead {
+    background: linear-gradient(180deg, hsl(var(--primary) / 0.14), hsl(var(--primary) / 0.04));
+    border-bottom: 1px solid hsl(var(--border) / 0.6);
+  }
+  .table-compact td {
+    @apply py-2 px-3;
+    border-bottom: 1px solid hsl(var(--border) / 0.5);
+  }
+  .table-compact tbody tr:nth-child(even) {
+    background: linear-gradient(0deg, hsl(var(--accent) / 0.10), transparent);
+  }
+  .table-compact tbody tr:hover {
+    background-color: hsl(var(--accent) / 0.16);
+    box-shadow: inset 0 0 0 1px hsl(var(--primary) / 0.22);
+    filter: saturate(1.04);
+    transition: var(--transition-smooth);
+  }
+  .table-compact caption {
+    @apply mt-2;
+  }
+
+  /* (neon utilities removed) */
 }
 
 @layer base {
@@ -131,5 +168,34 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    /* Subtle animated neon grid overlay */
+    background-image: var(--gradient-subtle);
   }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient( circle at 25% 15%, hsl(var(--primary) / 0.08) 0 8%, transparent 40% ),
+      radial-gradient( circle at 75% 0%, hsl(var(--accent-foreground) / 0.06) 0 10%, transparent 40% );
+    mix-blend-mode: screen;
+    opacity: 0.6;
+    z-index: 0;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.06), transparent);
+    animation: neon-sweep 7s linear infinite;
+    opacity: 0.6;
+    z-index: 0;
+  }
+}
+
+@keyframes neon-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }

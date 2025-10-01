@@ -5,6 +5,7 @@ const envApiUrl = import.meta.env.VITE_API_URL as string | undefined;
 export const API_BASE_URL = envApiUrl && envApiUrl.trim().length > 0 ? envApiUrl : "/api";
 
 import { toast } from "@/hooks/use-toast";
+import { getTenantId, getToken } from "@/lib/auth";
 
 export interface ApiOptions {
   method?: HttpMethod;
@@ -21,6 +22,15 @@ export async function apiFetch<T>(path: string, options: ApiOptions = {}): Promi
     "Content-Type": "application/json",
     ...(options.headers || {}),
   };
+
+  const token = getToken();
+  if (token && !headers["Authorization"]) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  const tenantId = getTenantId();
+  if (tenantId && !headers["X-Tenant-ID"]) {
+    headers["X-Tenant-ID"] = tenantId;
+  }
 
   let response: Response;
   try {
