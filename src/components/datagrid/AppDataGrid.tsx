@@ -8,23 +8,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowUpDown, ArrowUp, ArrowDown, Columns3, Filter, Download, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type GridColDef = {
+export type GridColDef<T = any> = {
   field: string;
-  headerName: string;
+  headerName: string; // Explicitly required
   width?: number;
   flex?: number;
   sortable?: boolean;
   filterable?: boolean;
-  renderCell?: (params: { value: any; row: any; field: string }) => React.ReactNode;
-  valueGetter?: (params: { row: any }) => any;
+  renderCell?: (params: { value: any; row: T; field: string }) => React.ReactNode;
+  valueGetter?: (params: { row: T }) => any;
   hide?: boolean;
+  align?: "left" | "center" | "right";
+  headerAlign?: "left" | "center" | "right";
 };
 
-export type AppDataGridProps = {
-  rows: any[];
-  columns: GridColDef[];
-  getRowId?: (row: any) => any;
-  onRowClick?: (id: any, row: any) => void;
+export type AppDataGridProps<T = any> = {
+  rows: T[];
+  columns: GridColDef<T>[];
+  getRowId?: (row: T) => any;
+  onRowClick?: (id: any, row: T) => void;
   pageSize?: number;
   storageKey?: string;
   emptyMessage?: string;
@@ -34,10 +36,10 @@ export type AppDataGridProps = {
   futuristic?: boolean;
 };
 
-export default function AppDataGrid({
+export default function AppDataGrid<T = any>({
   rows,
   columns,
-  getRowId = (row) => row.id,
+  getRowId = (row: T) => (row as any).id,
   onRowClick,
   pageSize = 10,
   storageKey,
@@ -46,7 +48,7 @@ export default function AppDataGrid({
   selectionModel = [],
   onSelectionModelChange,
   futuristic = true,
-}: AppDataGridProps) {
+}: AppDataGridProps<T>) {
   const [page, setPage] = React.useState(() => {
     if (!storageKey) return 0;
     try {

@@ -1,6 +1,7 @@
 import AppLayout from "@/layouts/AppLayout";
 import PageSection from "@/components/PageSection";
-import AppDataGrid, { GridColDef } from "@/components/datagrid/AppDataGrid";
+import AppDataGrid from "@/components/datagrid/AppDataGrid";
+import type { GridColDef } from "@/components/datagrid/AppDataGrid";
 import { actionsColumn } from "@/components/datagrid/Actions";
 import TextField from "@mui/material/TextField";
 import { useMemo, useState } from "react";

@@ -1,6 +1,5 @@
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -14,7 +13,7 @@ import MoreVert from "@mui/icons-material/MoreVert";
 import Visibility from "@mui/icons-material/VisibilityOutlined";
 import Edit from "@mui/icons-material/EditOutlined";
 import Delete from "@mui/icons-material/DeleteOutline";
-import { GridColDef } from "@mui/x-data-grid";
+import type { GridColDef } from "./AppDataGrid";
 
 export type ActionsHandlers<T = any> = {
   onView?: (row: T) => void;

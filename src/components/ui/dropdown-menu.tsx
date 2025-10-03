@@ -19,27 +19,47 @@ export const DropdownMenuTrigger = ({ asChild, children }: { asChild?: boolean; 
   });
 };
 
-export const DropdownMenuContent = ({ children, align }: { children?: React.ReactNode; align?: "end" | "start" }) => {
+export interface DropdownMenuContentProps extends Omit<React.ComponentProps<typeof Menu>, 'open' | 'anchorEl' | 'onClose'> {
+  children?: React.ReactNode;
+  align?: "end" | "start";
+  className?: string;
+}
+
+export const DropdownMenuContent = ({ children, align, className, ...props }: DropdownMenuContentProps) => {
   const ctx = React.useContext(Ctx)!;
   const open = Boolean(ctx.anchorEl);
   return (
     <Menu
+      {...props}
       anchorEl={ctx.anchorEl}
       open={open}
       onClose={() => ctx.setAnchorEl(null)}
       transformOrigin={{ horizontal: align === 'end' ? 'right' : 'left', vertical: 'top' }}
       anchorOrigin={{ horizontal: align === 'end' ? 'right' : 'left', vertical: 'bottom' }}
       onClick={(e) => e.stopPropagation()}
+      classes={{ paper: className }}
     >
       {children}
     </Menu>
   );
 };
 
-export const DropdownMenuItem = ({ onClick, children }: { onClick?: () => void; children?: React.ReactNode }) => {
+export interface DropdownMenuItemProps extends Omit<React.ComponentProps<typeof MenuItem>, 'onClick'> {
+  onClick?: () => void;
+  children?: React.ReactNode;
+}
+
+export const DropdownMenuItem = ({ onClick, children, ...props }: DropdownMenuItemProps) => {
   const ctx = React.useContext(Ctx)!;
   return (
-    <MenuItem onClick={() => { onClick?.(); ctx.setAnchorEl(null); }}>
+    <MenuItem
+      {...props}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick?.();
+        ctx.setAnchorEl(null);
+      }}
+    >
       {children}
     </MenuItem>
   );
