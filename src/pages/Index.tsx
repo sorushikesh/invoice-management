@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/settings";
 import PageSection from "@/components/PageSection";
 import StatCard from "@/components/StatCard";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ import {
   Legend,
 } from "recharts";
 import { useEffect, useRef, useState } from "react";
+import { indexMockData } from "@/data/mocks/index";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -27,32 +29,13 @@ const Index = () => {
   const [clients, setClients] = useState(42);
   const [outstanding, setOutstanding] = useState(12450);
   const [mrr, setMrr] = useState(9840);
-  const [revenue, setRevenue] = useState([
-    { month: "Apr", amount: 8200 },
-    { month: "May", amount: 9450 },
-    { month: "Jun", amount: 10120 },
-    { month: "Jul", amount: 11230 },
-    { month: "Aug", amount: 12480 },
-    { month: "Sep", amount: 13150 },
-  ]);
-
-  const [status, setStatus] = useState([
-    { name: "Paid", value: 62 },
-    { name: "Sent", value: 26 },
-    { name: "Overdue", value: 12 },
-  ]);
-
-  const [recent, setRecent] = useState([
-    { number: "INV-1034", client: "Acme Corp", date: "2025-09-26", amount: "$1,250", status: "Paid" },
-    { number: "INV-1033", client: "Globex", date: "2025-09-24", amount: "$840", status: "Sent" },
-    { number: "INV-1032", client: "Initech", date: "2025-09-22", amount: "$1,999", status: "Overdue" },
-    { number: "INV-1031", client: "Acme Corp", date: "2025-09-20", amount: "$500", status: "Draft" },
-  ]);
+  const [revenue, setRevenue] = useState(indexMockData.initialRevenue);
+  const [status, setStatus] = useState(indexMockData.initialStatus);
+  const [recent, setRecent] = useState(indexMockData.initialRecent);
 
   const intervalRef = useRef<number | null>(null);
   const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
   const randFloat = (min: number, max: number) => Math.random() * (max - min) + min;
-  const fmtMoney = (n: number) => `$${n.toLocaleString()}`;
 
   const tick = () => {
     setInvoices((v) => Math.max(0, v + rand(-2, 4)));
@@ -78,7 +61,7 @@ const Index = () => {
       const statuses = ["Paid", "Sent", "Overdue", "Draft"] as const;
       return rows.map((r) => ({
         ...r,
-        amount: fmtMoney(Math.max(120, Math.round(parseInt(r.amount.replace(/[$,]/g, "")) * randFloat(0.9, 1.1)))),
+        amount: formatCurrency(Math.max(120, Math.round(parseInt(r.amount.replace(/[$,]/g, "")) * randFloat(0.9, 1.1)))),
         status: statuses[rand(0, statuses.length - 1)],
       }));
     });
@@ -138,7 +121,7 @@ const Index = () => {
           <StatCard
             icon={<CircleDollarSign className="h-4 w-4 text-primary" />}
             title="Outstanding"
-            value={fmtMoney(outstanding)}
+            value={formatCurrency(outstanding)}
             delta="-3%"
             trend="down"
             data={[{x:1,y:30},{x:2,y:26},{x:3,y:29},{x:4,y:24},{x:5,y:22},{x:6,y:21}]}
@@ -147,7 +130,7 @@ const Index = () => {
           <StatCard
             icon={<TrendingUp className="h-4 w-4 text-primary" />}
             title="MRR"
-            value={fmtMoney(mrr)}
+            value={formatCurrency(mrr)}
             delta="+7%"
             trend="up"
             data={[{x:1,y:70},{x:2,y:72},{x:3,y:75},{x:4,y:78},{x:5,y:83},{x:6,y:88}]}

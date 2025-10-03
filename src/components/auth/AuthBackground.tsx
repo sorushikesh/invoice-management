@@ -12,23 +12,13 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import { revenueData, statusData } from "@/data/mocks/dashboard";
 
 const STATUS_COLORS = ["#16a34a", "#0ea5e9", "#ef4444"]; // green, cyan, red
 
 export default function AuthBackground() {
-  const [revenue, setRevenue] = useState([
-    { month: "Apr", amount: 8200 },
-    { month: "May", amount: 9450 },
-    { month: "Jun", amount: 10120 },
-    { month: "Jul", amount: 11230 },
-    { month: "Aug", amount: 12480 },
-    { month: "Sep", amount: 13150 },
-  ]);
-  const [status, setStatus] = useState([
-    { name: "Paid", value: 62 },
-    { name: "Sent", value: 26 },
-    { name: "Overdue", value: 12 },
-  ]);
+  const [revenue, setRevenue] = useState(revenueData);
+  const [status, setStatus] = useState(statusData);
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {

@@ -8,23 +8,22 @@ import { RequireRole } from "@/components/auth/RequireRole";
 
 type LogRow = { id: string; ts: string; userId: string; tenantId: string; action: string; ip: string };
 
-const mock: LogRow[] = [
-  { id: "l1", ts: "2025-10-01T10:00:00Z", userId: "u-1", tenantId: "t-acme", action: "invoice.create", ip: "1.2.3.4" },
-  { id: "l2", ts: "2025-10-01T11:30:00Z", userId: "u-2", tenantId: "t-acme", action: "payment.add", ip: "5.6.7.8" },
-];
+import { auditLogsMock } from '@/data/mocks/auditLogs';
+
+
 
 export default function AuditLogs() {
   const [q, setQ] = useState("");
   const rows = useMemo(() => {
     const s = q.trim().toLowerCase();
-    if (!s) return mock;
-    return mock.filter((r) => r.action.toLowerCase().includes(s) || r.userId.toLowerCase().includes(s));
+    if (!s) return auditLogsMock;
+    return auditLogsMock.filter((r) => r.action.toLowerCase().includes(s) || r.userId.toLowerCase().includes(s));
   }, [q]);
   const columns: GridColDef[] = [
-    { field: "ts", headerName: "Timestamp", flex: 1, minWidth: 200, valueFormatter: ({ value }) => new Date(String(value)).toLocaleString() },
+    { field: "ts", headerName: "Timestamp", flex: 1 },
     { field: "userId", headerName: "User", width: 140 },
     { field: "tenantId", headerName: "Tenant", width: 140 },
-    { field: "action", headerName: "Action", flex: 1, minWidth: 200 },
+    { field: "action", headerName: "Action", flex: 1 },
     { field: "ip", headerName: "IP", width: 140 },
   ];
   return (
