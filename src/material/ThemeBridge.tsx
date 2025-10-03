@@ -1,17 +1,9 @@
 import { PropsWithChildren, useEffect, useMemo, useRef, useState } from "react";
 import { ThemeProvider, CssBaseline, createTheme } from "@mui/material";
-
-function readCssVar(name: string, fallback: string) {
-  if (typeof window === "undefined") return fallback;
-  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  return v || fallback;
-}
-
-function hslVarToCss(name: string, fallback: string) {
-  const raw = readCssVar(name, fallback);
-  if (/^\d+\s+\d+%\s+\d+%$/.test(raw)) return `hsl(${raw})`;
-  return raw.startsWith("hsl") || raw.startsWith("#") ? raw : fallback;
-}
+import { darkPalette, lightPalette } from "./theme/palette";
+import { components } from "./theme/components";
+import { typography } from "./theme/typography";
+import { mixins } from "./theme/mixins";
 
 export default function ThemeBridge({ children }: PropsWithChildren<{}>) {
   const [mode, setMode] = useState<"light" | "dark">(() =>
@@ -36,34 +28,23 @@ export default function ThemeBridge({ children }: PropsWithChildren<{}>) {
   }, []);
 
   const theme = useMemo(() => {
-    const primary = hslVarToCss("--primary", "#7C4DFF");
-    const secondary = hslVarToCss("--accent-foreground", "#00BCD4");
-    const bg = hslVarToCss("--background", mode === "dark" ? "#0f0f14" : "#F5F7FB");
-    const paper = hslVarToCss("--card", mode === "dark" ? "#12121a" : "#FFFFFF");
-    const divider = hslVarToCss("--border", "rgba(0,0,0,0.12)");
-    const radiusRaw = readCssVar("--radius", "12px");
+    const radiusRaw = getComputedStyle(document.documentElement).getPropertyValue("--radius").trim() || "12px";
     const borderRadius = /px$/.test(radiusRaw) ? parseInt(radiusRaw) : 12;
+    
     return createTheme({
-      palette: {
-        mode,
-        primary: { main: primary },
-        secondary: { main: secondary },
-        divider,
-        background: { default: bg, paper },
-      },
+      palette: mode === 'dark' ? darkPalette : lightPalette,
       shape: { borderRadius },
-      typography: {
-        fontFamily: ["Inter", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
-        button: { textTransform: "none", fontWeight: 600 },
-      },
-      components: {
-        MuiPaper: {
-          defaultProps: { elevation: 0 },
-          styleOverrides: { root: { borderRadius, border: `1px solid ${divider}` } },
-        },
-        MuiButton: {
-          styleOverrides: {
-            root: { borderRadius },
+      typography,
+      components,
+      mixins: {
+        ...mixins,
+        toolbar: {
+          minHeight: 64,
+          '@media (min-width:0px) and (orientation: landscape)': {
+            minHeight: 56,
+          },
+          '@media (min-width:600px)': {
+            minHeight: 64,
           },
         },
       },

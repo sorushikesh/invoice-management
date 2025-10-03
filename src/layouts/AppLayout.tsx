@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 import MUIAppLayout from "@/material/MUIAppLayout";
+import { GestureNavigation } from "@/components/GestureNavigation";
+import "@/components/styles/GestureNavigation.css";
 
 type Props = {
   children: ReactNode;
@@ -10,8 +12,11 @@ type Props = {
 
 export default function AppLayout({ children, title, breadcrumbs, actions }: Props) {
   return (
-    <MUIAppLayout title={title} breadcrumbs={breadcrumbs} actions={actions}>
-      {children}
-    </MUIAppLayout>
+    <>
+      <MUIAppLayout title={title} breadcrumbs={breadcrumbs} actions={actions}>
+        {children}
+      </MUIAppLayout>
+      <GestureNavigation />
+    </>
   );
 }
